@@ -1,0 +1,52 @@
+# Can ASCII encoding be optimized to be pseudo-2bit
+# will compression algorithms perform better on these
+# encodings? AO-encoding
+
+a	01100001
+t	01110100
+c	01100011
+g	01100111	
+A	01000001
+T	01010100
+C	01000011
+G	01000111
+
+a -->	A	01000001
+t -->	B	01110010
+c --> 	C	01000011
+g -->	@	01000000
+
+artem@glitch[chr10_2] sed -i 's/n//g' chr10.fa
+
+artem@glitch[chr10_2] sed -i 's/n//g' chr10_ao.fa
+artem@glitch[chr10_2] sed -i 's/a/A/g' chr10_ao.fa
+artem@glitch[chr10_2] sed -i 's/t/B/g' chr10_ao.fa
+artem@glitch[chr10_2] sed -i 's/c/C/g' chr10_ao.fa
+artem@glitch[chr10_2] sed -i 's/g/@/g' chr10_ao.fa
+
+artem@glitch[chr10_2] ls -l
+total 260148
+-rw-rw-r-- 1 artem artem       462 Jan  5 10:54 ascii.txt
+-rw-rw-r-- 1 artem artem 133190684 Jan  5 10:52 chr10_ao.fa
+-rw-rw-r-- 1 artem artem 133190684 Jan  5 10:53 chr10.fa
+
+xz -zc chr10.fa > chr10.fa.xz
+xz -zc chr10_ao.fa > chr10_ao.fa.xz
+
+artem@glitch[chr10_2] ls -l
+-rw-rw-r-- 1 artem artem       680 Jan  5 10:59 ascii.txt
+-rw-rw-r-- 1 artem artem 133190684 Jan  5 10:52 chr10_ao.fa
+-rw-rw-r-- 1 artem artem  32519300 Jan  5 11:02 chr10_ao.fa.xz
+-rw-rw-r-- 1 artem artem 133190684 Jan  5 10:53 chr10.fa
+-rw-rw-r-- 1 artem artem  32561004 Jan  5 10:58 chr10.fa.xz
+
+artem@glitch[chr10_2] gzip -c chr10.fa > chr10.fa.gz
+artem@glitch[chr10_2] gzip -c chr10_ao.fa > chr10_ao.fa.gz
+
+artem@glitch[chr10_2] ls -l *gz                                               [11:05AM]
+-rw-rw-r-- 1 artem artem 39557062 Jan  5 11:05 chr10_ao.fa.gz
+-rw-rw-r-- 1 artem artem 39559199 Jan  5 11:04 chr10.fa.gz
+
+
+# About a 0.0005% improvement '-_-
+# did work though.
